@@ -3,6 +3,9 @@
 ## Description
 A real-time interactive stock chart
 
+##Demo
+![demo](https://github.com/user-attachments/assets/b3a14f2c-bb67-4eef-880e-f787f695930a)
+
 # Prequisites
 
 - Python 3
