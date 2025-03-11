@@ -19,7 +19,7 @@ A real-time interactive stock chart
    pip install -r requirements.txt
    ```
    ```
-   npm install chart.js
+   npm install 
    ```
 
 2. Run the following commands to local host:
