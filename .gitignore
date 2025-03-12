@@ -91,4 +91,14 @@ site/
 
 # Custom project files
 output/
-temp/ 
+
+# Ignore build and node_modules directories
+build/
+node_modules/
+
+# Ignore any other unnecessary files
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo

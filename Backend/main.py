@@ -3,15 +3,17 @@ from fastapi import FastAPI, HTTPException, Query
 from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
 
+
 app = FastAPI()
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Replace with your React app's URL
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 @app.get("/")
@@ -49,40 +51,29 @@ def get_stock_historical(symbol: str, period: str = Query("1D")):
             # Filter to show only hour marks
             dates = []
             prices = []
-            for timestamp, row in stock_historical.iterrows():
-                if timestamp.minute == 0:  # Only keep data points at the start of each hour
+            for timestamp, row in stock_historical.iterrows():  # Only keep data points at the start of each hour
                     dates.append(timestamp.strftime('%H:%M'))
                     prices.append(row['Close'])
         elif period == "5D":
             # Filter to show daily marks
             dates = []
             prices = []
-            current_date = None
             for timestamp, row in stock_historical.iterrows():
-                if current_date != timestamp.date():
-                    current_date = timestamp.date()
                     dates.append(timestamp.strftime('%m/%d'))
                     prices.append(row['Close'])
         elif period == "1M":
             # Filter to show marks every 5 days
             dates = []
             prices = []
-            day_count = 0
             last_date = None
             for timestamp, row in stock_historical.iterrows():
-                if last_date is None or (timestamp.date() - last_date).days >= 5:
                     dates.append(timestamp.strftime('%m/%d'))
                     prices.append(row['Close'])
-                    last_date = timestamp.date()
-                    day_count += 1
         elif period in ["6M", "YTD", "1Y"]:
             # Filter to show monthly marks with shorter format
             dates = []
             prices = []
-            current_month = None
             for timestamp, row in stock_historical.iterrows():
-                if current_month != timestamp.strftime('%Y-%m'):
-                    current_month = timestamp.strftime('%Y-%m')
                     dates.append(timestamp.strftime('%b'))  # Just month name (e.g., "Jan")
                     prices.append(row['Close'])
         elif period in ["5Y", "MAX"]:
@@ -91,9 +82,7 @@ def get_stock_historical(symbol: str, period: str = Query("1D")):
             prices = []
             current_year = None
             for timestamp, row in stock_historical.iterrows():
-                if current_year != timestamp.year:
-                    current_year = timestamp.year
-                    dates.append(str(timestamp.year))  # Just the year
+                    dates.append(str(timestamp))  # Just the year
                     prices.append(row['Close'])
         else:
             dates = stock_historical.index.strftime('%Y-%m-%d').tolist()
@@ -107,5 +96,15 @@ def get_stock_historical(symbol: str, period: str = Query("1D")):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error fetching data for {symbol}: {str(e)}")
 
+@app.get("/api/stock/{symbol}/current-price")
+def get_current_price(symbol: str):
+    try:
+        ticker = yf.Ticker(symbol)
+        current_price = ticker.info['regularMarketPrice']
+        return {"price": current_price}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error fetching current price for {symbol}: {str(e)}")
 
-
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

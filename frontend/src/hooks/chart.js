@@ -9,9 +9,8 @@ export const useStockChart = (symbol, period) => {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                setLoading(true);
                 const response = await axios.get(
-                    `http://localhost:8000/api/stock/${symbol}?period=${period}`
+                    `http://127.0.0.1:8000/api/stock/${symbol}/?period=${period}`
                 );
                 
                 const data = response.data;
@@ -43,5 +42,5 @@ export const useStockChart = (symbol, period) => {
         }
     }, [symbol, period]);
 
-    return { chartData, loading, error };
+    return { chartData, loading, error};
 };
