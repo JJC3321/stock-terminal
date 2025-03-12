@@ -4,7 +4,7 @@
 A real-time interactive stock chart
 
 ## Demo
-![demo]![demo](https://github.com/user-attachments/assets/e9f2034e-af7b-49a1-bac3-26188b8ad5d4)
+![demo](https://github.com/user-attachments/assets/e9f2034e-af7b-49a1-bac3-26188b8ad5d4)
 
 
 # Prequisites
