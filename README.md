@@ -10,6 +10,7 @@ A real-time interactive stock chart
 
 - Python 3
 - YFinance
+- React
 - Chart.js
 
  # Running Locally
